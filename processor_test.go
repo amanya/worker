@@ -43,6 +43,7 @@ func TestProcessor(t *testing.T) {
 		ScriptUploadTimeout: 3 * time.Second,
 		StartupTimeout:      4 * time.Second,
 		MaxLogLength:        4500000,
+		PayloadFilterScript: "filter.py",
 	})
 	if err != nil {
 		t.Error(err)
@@ -54,7 +55,10 @@ func TestProcessor(t *testing.T) {
 		doneChan <- struct{}{}
 	}()
 
+	rawPayload, _ := simplejson.NewJson([]byte("{}"))
+
 	job := &fakeJob{
+		rawPayload: rawPayload,
 		payload: &JobPayload{
 			Type: "job:test",
 			Job: JobJobPayload{
